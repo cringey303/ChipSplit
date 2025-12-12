@@ -1,11 +1,11 @@
 // instrumentation-client.ts
 import posthog from 'posthog-js'
 
-export function register() {
-    if (typeof window !== 'undefined') {
-        posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
-            api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-            person_profiles: 'identified_only', // Recommended for newer PostHog versions
-        })
-    }
-}
+// This file is picked up automatically by Next.js to initialize PostHog
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+  api_host: '/ingest',
+  ui_host: 'https://us.posthog.com',
+  defaults: '2025-05-24',
+  capture_exceptions: true, // Enables capturing exceptions (Error Tracking)
+  debug: process.env.NODE_ENV === 'development',
+})
