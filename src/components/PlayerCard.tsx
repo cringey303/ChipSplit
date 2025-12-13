@@ -93,25 +93,27 @@ export default function PlayerCard({
           </label>
         </div>
 
-        <div className="mt-2 flex gap-2">
-          <button
-            onClick={handleSave}
-            className="flex-1 cursor-pointer rounded-md bg-zinc-100 px-3 py-2 text-sm font-medium text-black hover:bg-zinc-200 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-950"
-          >
-            Cancel
-          </button>
+        <div className="mt-2 flex items-center justify-between gap-2">
           <button
             onClick={() => onRemove(player.id)}
-            className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
+            className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
           >
             Delete
           </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setIsEditing(false)}
+              className="cursor-pointer rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -135,16 +137,16 @@ export default function PlayerCard({
 
       <div className="mt-2 flex gap-2">
         <button
-          onClick={() => setIsEditing(true)}
-          className="flex-1 cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
-        >
-          Edit
-        </button>
-        <button
           onClick={() => onRemove(player.id)}
           className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
         >
           Delete
+        </button>
+        <button
+          onClick={() => setIsEditing(true)}
+          className="flex-1 cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
+        >
+          Edit
         </button>
       </div>
     </div>
