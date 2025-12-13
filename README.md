@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Local dev: sessions & players UI
+
+Start the dev server and open http://localhost:3000. The main page includes a two-column layout:
+
+- Left: Active and Completed sessions with collapsible lists
+- Right: Two player add forms (Name, Buy-In, Cash Out). Use "Add player" to add a player to the list below. You can add more empty forms with "Add another form".
+
+Commands:
+
+```bash
+npm install
+npm run dev
+```

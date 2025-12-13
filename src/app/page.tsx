@@ -1,67 +1,79 @@
 'use client';
-import Image from "next/image";
-import posthog from 'posthog-js';
+import React from "react";
+import PlayerForm, { type Player } from "../components/PlayerForm";
+import PlayerCard from "../components/PlayerCard";
+import SessionList from "../components/SessionList";
 
 export default function Home() {
+  const [players, setPlayers] = React.useState<Player[]>([]);
+  const [availableForms, setAvailableForms] = React.useState(() => [0, 1]);
+
+  function handleAdd(player: Omit<Player, "id">) {
+    const newPlayer: Player = { id: String(Date.now()) + Math.random(), ...player };
+    setPlayers((p) => [newPlayer, ...p]);
+  }
+
+  const activeSessions = [
+    { id: "s1", title: "Sunday Cash Game", date: "Dec 11" },
+    { id: "s2", title: "Quick Sit & Go", date: "Dec 8" },
+  ];
+
+  const completedSessions = [
+    { id: "c1", title: "Friday Tournament", date: "Dec 1" },
+    { id: "c2", title: "Monthly Meetup", date: "Nov 28" },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => posthog.capture('deploy_button_clicked', { url: 'https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app' })}
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => posthog.capture('documentation_button_clicked', { url: 'https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app' })}
-          >
-            Documentation
-          </a>
+    <div className="min-h-screen bg-zinc-50 p-8 font-sans dark:bg-black">
+      <main className="mx-auto max-w-6xl">
+        <h1 className="mb-6 text-2xl font-semibold">Sessions & Players</h1>
+
+        <div className="mx-auto flex w-full gap-6">
+          {/* Left column */}
+          <aside className="w-1/2">
+            <div className="flex flex-col gap-4">
+              <SessionList title="Active sessions" sessions={activeSessions} defaultOpen />
+              <SessionList title="Completed sessions" sessions={completedSessions} defaultOpen={false} />
+            </div>
+          </aside>
+
+          {/* Right column */}
+          <section className="w-1/2">
+            <div className="flex flex-col gap-4">
+              <div className="rounded-md border border-zinc-200 p-4">
+                <h2 className="mb-3 text-lg font-semibold">Add players</h2>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {availableForms.map((k) => (
+                    <PlayerForm key={k} onAdd={handleAdd} />
+                  ))}
+                </div>
+
+                <div className="mt-3 flex justify-end">
+                  <button
+                    type="button"
+                    className="rounded-md border border-zinc-200 px-3 py-1 text-sm hover:bg-zinc-100"
+                    onClick={() => setAvailableForms((f) => [...f, f.length + 1])}
+                  >
+                    Add another form
+                  </button>
+                </div>
+              </div>
+
+              <div className="rounded-md border border-zinc-200 p-4">
+                <h3 className="mb-3 text-lg font-semibold">Added players</h3>
+                <div className="flex flex-col gap-2">
+                  {players.length === 0 ? (
+                    <div className="text-sm text-zinc-500">No players added yet</div>
+                  ) : (
+                    players.map((p) => (
+                      <PlayerCard key={p.id} player={p} onRemove={(id) => setPlayers((ps) => ps.filter((pp) => pp.id !== id))} />
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
     </div>
