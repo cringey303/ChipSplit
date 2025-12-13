@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import PlayerCard, { type Player } from "../components/PlayerCard";
 import SessionList from "../components/SessionList";
+import { CoffeeButton } from "@/components/ui/coffee-button";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
@@ -58,12 +59,23 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 px-8 pt-8 font-sans dark:bg-black">
+    <div className="flex min-h-screen flex-col bg-zinc-50 px-8 pt-4 font-sans dark:bg-black">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
-        <div className="mb-6 flex items-center gap-3">
-          <Image src="/logo.png" alt="ChipSplit Logo" width={40} height={40} className="rounded-full" />
-          <h1 className="text-2xl font-semibold">ChipSplit</h1>
-        </div>
+        <nav className="flex items-center justify-between py-4 mb-16">
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Image
+              src="/logo.png"
+              alt="ChipSplit Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
+            <span className="text-xl font-bold tracking-tight">ChipSplit</span>
+          </a>
+          <div className="flex items-center gap-2">
+            <CoffeeButton />
+          </div>
+        </nav>
 
         <div className="mx-auto flex w-full gap-6">
           {/* Left column */}
