@@ -49,7 +49,8 @@ export default function PlayerCard({
             value={formState.name}
             onChange={(e) => setFormState({ ...formState, name: e.target.value })}
             onFocus={() => setShowError(false)}
-            className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent"
+            className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent 
+            focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
             placeholder="Player name"
             autoFocus
           />
@@ -69,7 +70,8 @@ export default function PlayerCard({
                 }
               }}
               onFocus={() => setShowError(false)}
-              className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline"
+              className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent 
+                focus:outline-none ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
                 }`}
               placeholder="0.00"
               inputMode="decimal"
@@ -86,7 +88,7 @@ export default function PlayerCard({
                 }
               }}
               onFocus={() => setShowError(false)}
-              className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent"
+              className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
               placeholder="0.00"
               inputMode="decimal"
             />
