@@ -59,7 +59,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-black md:bg-zinc-50 px-4 pt-4 font-sans dark:bg-black md:px-8">
+    <div className="flex min-h-screen flex-col px-4 pt-4 font-sans md:px-8">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
         <nav className="flex items-center justify-between py-4 mb-8 md:mb-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
