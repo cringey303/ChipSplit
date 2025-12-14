@@ -127,7 +127,7 @@ export default function Home() {
             </div>
           </section>
         </div>
-        <footer className="w-full mt-auto pb-6">
+        <footer className="w-full mt-auto pb-6 pt-8">
           <div className="w-full px-4">
             <div className="flex items-center justify-between border-t pt-4 text-sm text-zinc-500">
               <div className="flex-1 flex justify-center gap-2 md:gap-4 pl-[88px] md:pl-[100px]">

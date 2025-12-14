@@ -109,7 +109,9 @@ export default function PlayerCard({
             </button>
             <button
               onClick={handleSave}
-              className="cursor-pointer rounded-md bg-zinc-100 px-4 py-2 text-sm font-medium text-black hover:bg-zinc-200 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200 md:bg-zinc-900 md:text-white md:hover:bg-zinc-800 md:dark:bg-zinc-100 md:dark:text-black md:dark:hover:bg-zinc-200"
+              className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 
+              dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800 md:bg-zinc-900 md:text-white md:hover:bg-zinc-800 
+              md:dark:bg-zinc-600 md:dark:text-white md:dark:hover:bg-zinc-800"
             >
               Save
             </button>
