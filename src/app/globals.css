@@ -3,8 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --outline: #9ca3af; /* default grey outline */
-  --outline-bg: #f3f4f6; /* subtle background when needed */
+  --outline: #9ca3af;
+  /* default grey outline */
+  --outline-bg: #f3f4f6;
+  /* subtle background when needed */
 }
 
 @theme inline {
@@ -18,7 +20,17 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --outline: #374151; /* darker grey for dark mode */
+    --outline: #374151;
+    /* darker grey for dark mode */
+    --outline-bg: #0b1220;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --outline: #374151;
     --outline-bg: #0b1220;
   }
 }
@@ -33,6 +45,7 @@ body {
 .border-outline {
   border-color: var(--outline) !important;
 }
+
 .bg-outline {
   background-color: var(--outline-bg) !important;
 }

@@ -59,9 +59,9 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 px-8 pt-4 font-sans dark:bg-black">
+    <div className="flex min-h-screen flex-col bg-black md:bg-zinc-50 px-4 pt-4 font-sans dark:bg-black md:px-8">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
-        <nav className="flex items-center justify-between py-4 mb-16">
+        <nav className="flex items-center justify-between py-4 mb-8 md:mb-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Image
               src="/logo.png"
@@ -77,9 +77,9 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="mx-auto flex w-full gap-6">
+        <div className="mx-auto flex w-full flex-col-reverse gap-8 md:flex-row md:gap-6">
           {/* Left column */}
-          <aside className="w-1/2">
+          <aside className="w-full md:w-1/2">
             <div className="flex flex-col gap-4">
               <SessionList title="Active sessions" sessions={activeSessions} defaultOpen />
               <SessionList title="Completed sessions" sessions={completedSessions} defaultOpen={false} />
@@ -87,7 +87,7 @@ export default function Home() {
           </aside>
 
           {/* Right column */}
-          <section className="w-1/2">
+          <section className="w-full md:w-1/2">
             <div className="rounded-md border border-outline p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Players</h2>

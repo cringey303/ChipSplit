@@ -42,7 +42,7 @@ export default function PlayerCard({
 
   if (isEditing) {
     return (
-      <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-white p-4 dark:bg-black">
+      <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
         <label className="flex w-full flex-col gap-1">
           <span className="text-sm font-medium">Name</span>
           <input
@@ -96,20 +96,20 @@ export default function PlayerCard({
         <div className="mt-2 flex items-center justify-between gap-2">
           <button
             onClick={() => onRemove(player.id)}
-            className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
+            className="cursor-pointer rounded-md border border-red-900/50 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/40 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40 md:border-red-200 md:text-red-600 md:hover:bg-red-50 md:dark:border-red-900/50 md:dark:text-red-400 md:dark:hover:bg-red-900/40"
           >
             Delete
           </button>
           <div className="flex gap-2">
             <button
               onClick={() => setIsEditing(false)}
-              className="cursor-pointer rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="cursor-pointer rounded-md border border-zinc-700 bg-transparent px-3 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 md:border-zinc-300 md:text-zinc-700 md:hover:bg-zinc-50 md:dark:border-zinc-700 md:dark:text-zinc-300 md:dark:hover:bg-zinc-800"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
+              className="cursor-pointer rounded-md bg-zinc-100 px-4 py-2 text-sm font-medium text-black hover:bg-zinc-200 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200 md:bg-zinc-900 md:text-white md:hover:bg-zinc-800 md:dark:bg-zinc-100 md:dark:text-black md:dark:hover:bg-zinc-200"
             >
               Save
             </button>
@@ -120,7 +120,7 @@ export default function PlayerCard({
   }
 
   return (
-    <div className="flex w-full flex-col gap-2 rounded-md border border-outline bg-white p-4 dark:bg-black">
+    <div className="flex w-full flex-col gap-2 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-semibold">{formState.name || (playerNumber ? `Player ${playerNumber}` : "Player")}</h3>
@@ -138,13 +138,13 @@ export default function PlayerCard({
       <div className="mt-2 flex gap-2">
         <button
           onClick={() => onRemove(player.id)}
-          className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
+          className="cursor-pointer rounded-md border border-red-900/50 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/40 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40 md:border-red-200 md:text-red-600 md:hover:bg-red-100 md:dark:border-red-900/50 md:dark:text-red-400 md:dark:hover:bg-red-900/40"
         >
           Delete
         </button>
         <button
           onClick={() => setIsEditing(true)}
-          className="flex-1 cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
+          className="flex-1 cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-900 dark:hover:bg-zinc-900 md:hover:bg-zinc-100 md:dark:hover:bg-zinc-900"
         >
           Edit
         </button>
