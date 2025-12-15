@@ -32,45 +32,41 @@ struct Payment {
     amount: number (multiple)
 }
 
-function innerSettlement(p: list of players, i: int, payments: list of Payment):
-    for j in range(i+1, len(p)):
-        if p[i].profit + p[j].profit == 0:
-            # match and remove from list
-            Payment payment = {
-                from: p[i],
-                to: p[j],
-                amount: p[i].profit,
-            }
-            # remove p[i] and p[j] from list
-            p.pop(i)
-            p.pop(j)
+function removeZeros(p: list of players):
+    p = p.filter(player => player.profit != 0)
+    return p
 
-            # add payment to list
-            payments.push(payment)
-            return
+function matchSettlement(p: list of players, payments: list of Payment):
+    i = 0
+    matchFound = false
+    while i < len(p):
+        for j in range(i+1, len(p)):
+            if p[i].profit + p[j].profit == 0:
+                # match and remove from list
+                Payment payment = {
+                    from: p[i].profit < 0 ? p[i] : p[j], # negative pays
+                    to: p[i].profit < 0 ? p[j] : p[i], # positive receives
+                    amount: abs(p[i].profit),
+                }
+                # remove p[i] and p[j] from list
+                p.pop(j)
+                p.pop(i)
+
+                # add payment to list
+                payments.push(payment)
+                matchFound = true
         
-        # break once abs(profit) do not equal each other
-        else if abs(p[i].profit) != abs(p[j].profit):
-            return
-        else:
-            return
+            # break out of j loop once abs(profit) do not equal each other
+            else if abs(p[i].profit) != abs(p[j].profit):
+                break
+            else:
+                break
+        if !matchFound:
+            i += 1
     return
 
-function settlement(p: list of players):
-    payments = Payment[]
-    sort p by abs(profit)
-
-    # remove players who broke even
-    while p[0].profit == 0:
-        remove p[0] from list
-
-    i = 0
-    while i < p.length:
-        # for every player with the same abs(profit), check if they can be paired
-        # there may be >2 abs(profit) equal to each other, so iterate until not equal 
-        innerSettlement(p, i, payments)
-        i++
-    
+# no more matches, use greedy algorithm
+function greedySettlement(p: list of players, payments: list of Payment):
     sort p by profit
     while p.length > 0:
         # if most profit is greater than most loss
@@ -103,5 +99,19 @@ function settlement(p: list of players):
             p.pop(-1)
             
         
+
+function settlement(p: list of players):
+    payments = Payment[]
+    sort p by abs(profit)
+
+    # remove players who broke even
+    p = removeZeros(p)
+
+    # try to find matches first
+    matchSettlement(p, payments)
+
+    # if no matches, use greedy algorithm
+    greedySettlement(p, payments)
+
     return payments
 */
