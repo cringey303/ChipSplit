@@ -8,7 +8,7 @@ import { CoffeeButton } from "@/components/ui/coffee-button";
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
     {
-      id: "1",
+      id: String(Date.now()) + Math.random(),
       name: "",
       buyIn: "",
       cashOut: "",
