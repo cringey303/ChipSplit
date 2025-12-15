@@ -36,13 +36,14 @@ function settlement(p: list of players):
     payments = [Payment]
     sort p by abs(profit)
 
+    # remove players who broke even
     while p[0].profit == 0:
         remove p[0] from list
 
     for i in range(len(p)):
         # for every player with the same abs(profit), check if they can be paired
+        # may have >2 abs(profit) equal to each other, so iterate until not equal 
         for j in range(i+1, len(p)):
-
             if p[i].profit + p[j].profit == 0:
                 # match and remove from list
                 payment = {
@@ -50,6 +51,7 @@ function settlement(p: list of players):
                     to: p[j],
                     amount: p[i].profit,
                 }
+            # break once abs(profit) do not equal each other
             else if abs(p[i].profit) != abs(p[j].profit):
                 break
             
