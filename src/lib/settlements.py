@@ -23,17 +23,17 @@ class Player:
     def __eq__(self, other: Player):
         return self.profit == other.profit
 
-def removeZeros(p: list[Player]):
+def remove_zeros(p: list[Player]):
     sorted(p)
     while p[0].profit == 0:
         p.pop(0)
     return p
 
-def matchSettlement(p: list[Player], payments: list[Payment]):
+def match_settlement(p: list[Player], payments: list[Payment]):
     i = 0
     matchFound = False
-    while i < len(p):
-        for j in range(i+1, len(p)): # check ahead
+    while i < len(p)-1:
+        for j in range(i+1, len(p)-1): # check ahead
             if p[i].profit + p[j].profit == 0:
                 # match and remove from list
                 # negative pays, positive receives
@@ -45,7 +45,7 @@ def matchSettlement(p: list[Player], payments: list[Payment]):
                 p.pop(i)
 
                 # add payment to list
-                payments.push(payment)
+                payments.append(payment)
                 matchFound = True
         
             # break out of j loop once profit does not match
@@ -58,10 +58,12 @@ def matchSettlement(p: list[Player], payments: list[Payment]):
         # popping elements, naturally getting to the next element
         if not matchFound:
             i += 1
+        printPayments(payment)
+        
     return
 
 # no more matches, use greedy algorithm
-def greedySettlement(p: list[Player], payments: list[Payment]):
+def greedy_settlement(p: list[Player], payments: list[Payment]):
     sorted(p) # sort p by profit
     while p.length > 0:
 
@@ -91,16 +93,18 @@ def settlement(p: list[Player]):
     payments = [Payment]
     
     # remove players who broke even
-    p = removeZeros(p)
+    p = remove_zeros(p)
 
     # sort p by abs(profit)
-    sorted(p, key=Player.get_abs_profit())
+    sorted(p, key=lambda p: p.get_abs_profit())
+    printPayments(payments)
 
     # try to find matches first
-    matchSettlement(p, payments)
+    match_settlement(p, payments)
+    printPayments(payments)
 
     # if no matches, use greedy algorithm
-    greedySettlement(p, payments)
+    greedy_settlement(p, payments)
 
     return payments
 
@@ -110,13 +114,12 @@ def printPayments(payments: list[Payment]):
     return
 
 def main():
-    p = [Player('lucas', 10, 10), 
-         Player('nigel', 10, 5),
-         Player('kenny', 10, 15),
-         Player('winnie', 10, 20),
-         Player('winston', 10, 0)]
+    p = [Player('lucas', 10, 10),  # 0
+         Player('nigel', 10, 5),   # -5
+         Player('kenny', 10, 15),  # +5
+         Player('winnie', 10, 20), # +10
+         Player('winston', 10, 0)] # -10
 
-    
     printPayments(settlement(p))
 
 if __name__ == "__main__":
