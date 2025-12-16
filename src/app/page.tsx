@@ -37,7 +37,8 @@ export default function Home() {
   }
 
   function handleClear() {
-
+    if (players.length == 0) return;
+    
     setPlayers([
       {
         id: String(Date.now()),

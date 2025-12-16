@@ -28,8 +28,8 @@ export function calculateSettlement(players: Player[]) {
 /*
 struct Payment {
     from: player
-    to: player (multiple)
-    amount: number (multiple)
+    to: player
+    amount: number
 }
 
 function removeZeros(p: list of players):
