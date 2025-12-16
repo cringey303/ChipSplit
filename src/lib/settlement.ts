@@ -39,8 +39,8 @@ function removeZeros(p: list of players):
 function matchSettlement(p: list of players, payments: list of Payment):
     i = 0
     matchFound = false
-    while i < len(p):
-        for j in range(i+1, len(p)):
+    while i < p.length:
+        for j in range(i+1, len(p)): # check ahead
             if p[i].profit + p[j].profit == 0:
                 # match and remove from list
                 Payment payment = {
@@ -56,11 +56,13 @@ function matchSettlement(p: list of players, payments: list of Payment):
                 payments.push(payment)
                 matchFound = true
         
-            # break out of j loop once abs(profit) do not equal each other
+            # break out of j loop once profit does not match
             else if abs(p[i].profit) != abs(p[j].profit):
                 break
             else:
                 break
+        # if matchFound, i does not need to be incremented since we are
+        # popping elements, naturally getting to the next element
         if !matchFound:
             i += 1
     return
@@ -69,8 +71,10 @@ function matchSettlement(p: list of players, payments: list of Payment):
 function greedySettlement(p: list of players, payments: list of Payment):
     sort p by profit
     while p.length > 0:
+
         # if most profit is greater than most loss
         if abs(p[-1].profit) > abs(p[0].profit):
+            # biggest loser pays all loss to biggest winner
             Payment payment = {
                 from: p[0],
                 to: p[-1],
@@ -78,14 +82,14 @@ function greedySettlement(p: list of players, payments: list of Payment):
             }
             payments.push(payment)
 
-            # subtract payment from profit
+            # update winner profit: subtract payment (winnings gets closer to 0)
             p[-1].profit += p[-1].profit
 
-            p.pop(0)
+            p.pop(0) # biggest loser accounted for; can be removed
             
-        
         # if most loss is greater than most profit
         else if abs(p[0].profit) > abs(p[-1].profit):
+            # biggest winner gets everything paid off by biggest loser
             Payment payment = {
                 from: p[0],
                 to: p[-1],
@@ -93,20 +97,20 @@ function greedySettlement(p: list of players, payments: list of Payment):
             }
             payments.push(payment)
 
-            # subtract payment from profit
+            # update loser profit: add payment (debt gets closer to 0)
             p[0].profit += p[-1].profit
 
-            p.pop(-1)
+            p.pop(-1) # can remove biggest winner 
             
         
 
 function settlement(p: list of players):
     payments = Payment[]
-    sort p by abs(profit)
-
+    
     # remove players who broke even
     p = removeZeros(p)
 
+    sort p by abs(profit)
     # try to find matches first
     matchSettlement(p, payments)
 
