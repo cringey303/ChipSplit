@@ -24,84 +24,81 @@ class Player:
         return self.profit == other.profit
 
 def remove_zeros(p: list[Player]):
-    sorted(p)
-    while p[0].profit == 0:
-        p.pop(0)
-    return p
+    # filter out players with 0 profit
+    return [player for player in p if player.profit != 0]
 
 def match_settlement(p: list[Player], payments: list[Payment]):
     i = 0
-    matchFound = False
-    while i < len(p)-1:
-        for j in range(i+1, len(p)-1): # check ahead
+    while i < len(p):
+        matchFound = False
+        # look for a perfect match
+        for j in range(i + 1, len(p)):
             if p[i].profit + p[j].profit == 0:
                 # match and remove from list
                 # negative pays, positive receives
-                from_name = [p[i].name if p[i].profit < 0 else p[j].name]
-                to_name = [p[j].name if p[i].profit < 0 else p[i].name]
-                payment = Payment(from_name, to_name, abs(p[i].profit))
-                # remove p[i] and p[j] from list
+                if p[i].profit < 0:
+                    payer = p[i]
+                    receiver = p[j]
+                else:
+                    payer = p[j]
+                    receiver = p[i]
+                
+                payment = Payment(payer.name, receiver.name, abs(p[i].profit))
+                
+                # remove p[j] first (larger index) to avoid shifting p[i]
                 p.pop(j)
                 p.pop(i)
-
+                
                 # add payment to list
                 payments.append(payment)
                 matchFound = True
+                break
         
-            # break out of j loop once profit does not match
-            elif abs(p[i].profit) != abs(p[j].profit):
-                break
-            else:
-                break
-
-        # if matchFound, i does not need to be incremented since we are
-        # popping elements, naturally getting to the next element
+        # if matchFound, we removed the element at i, so the next element 
+        # is now at i. We do not increment i.
         if not matchFound:
             i += 1
-        printPayments(payment)
-        
+            
     return
 
 # no more matches, use greedy algorithm
 def greedy_settlement(p: list[Player], payments: list[Payment]):
-    sorted(p) # sort p by profit
-    while p.length > 0:
-
-        # if most profit is greater than most loss
-        if abs(p[-1].profit) > abs(p[0].profit):
-            # biggest loser pays all loss to biggest winner
-            payment = Payment(p[0], p[-1], abs(p[0].profit))
-            payments.push(payment)
-
-            # update winner profit: subtract payment (winnings gets closer to 0)
-            p[-1].profit += p[-1].profit
-
-            p.pop(0) # biggest loser accounted for; can be removed
-            
-        # if most loss is greater than most profit
-        elif abs(p[0].profit) > abs(p[-1].profit):
-            # biggest winner gets everything paid off by biggest loser
-            payment = Payment(p[0], p[-1], abs(p[0].profit))
-            payments.push(payment)
-
-            # update loser profit: add payment (debt gets closer to 0)
-            p[0].profit += p[-1].profit
-
-            p.pop(-1) # can remove biggest winner 
+    # Sort by profit: most negative first, most positive last
+    p.sort(key=lambda x: x.profit)
+    
+    while len(p) > 1:
+        loser = p[0]
+        winner = p[-1]
+        
+        amount = min(abs(loser.profit), winner.profit)
+        
+        payment = Payment(loser.name, winner.name, amount)
+        payments.append(payment)
+        
+        loser.profit += amount
+        winner.profit -= amount
+        
+        if loser.profit == 0:
+            p.pop(0)
+        
+        if winner.profit == 0:
+            if loser.profit != 0: 
+                p.pop(-1)
+            else:
+                if len(p) > 0:
+                    p.pop(-1)
 
 def settlement(p: list[Player]):
-    payments = [Payment]
+    payments: list[Payment] = []
     
     # remove players who broke even
     p = remove_zeros(p)
 
     # sort p by abs(profit)
-    sorted(p, key=lambda p: p.get_abs_profit())
-    printPayments(payments)
+    p.sort(key=lambda p: p.get_abs_profit())
 
     # try to find matches first
     match_settlement(p, payments)
-    printPayments(payments)
 
     # if no matches, use greedy algorithm
     greedy_settlement(p, payments)
@@ -110,15 +107,15 @@ def settlement(p: list[Player]):
 
 def printPayments(payments: list[Payment]):
     for p in payments:
-        print(f"{p.from_name} ${p.amount}-> {p.to_name}\n")
+        print(f"{p.from_name} ${p.amount}-> {p.to_name}")
     return
 
 def main():
-    p = [Player('lucas', 10, 10),  # 0
-         Player('nigel', 10, 5),   # -5
-         Player('kenny', 10, 15),  # +5
-         Player('winnie', 10, 20), # +10
-         Player('winston', 10, 0)] # -10
+    p = [Player('lucas', 33.33, 0),  # -10
+         Player('nigel', 33.33, 0),   # -20
+         Player('kenny', 33.34, 0),  # +30
+         Player('winnie', 0, 100), # -5
+         Player('winston', 10, 10)] # +5
 
     printPayments(settlement(p))
 

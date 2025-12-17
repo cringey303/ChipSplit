@@ -5,117 +5,148 @@ export type Player = {
     cashOut: string;
 };
 
-export function calculateSettlement(players: Player[]) {
-    const totalBuyIn = players.reduce((acc, player) => acc + Number(player.buyIn), 0); // sum of all buy-ins
-    const totalCashOut = players.reduce((acc, player) => acc + Number(player.cashOut), 0); // sum of all cash-outs
-    
-    if (totalBuyIn !== totalCashOut) {
-        console.log("Total buy-in does not equal total cash-out. Proceed anyway?");
+export type Payment = {
+    from: string;
+    to: string;
+    amount: number;
+};
+
+type SettlementPlayer = {
+    id: string;
+    name: string;
+    buyIn: number;
+    cashOut: number;
+    profit: number;
+};
+
+function removeZeros(p: SettlementPlayer[]): SettlementPlayer[] {
+    // filter out players with 0 profit (allowing for small float errors)
+    return p.filter(player => Math.abs(player.profit) > 0.001);
+}
+
+function matchSettlement(p: SettlementPlayer[], payments: Payment[]): void {
+    let i = 0;
+    while (i < p.length) {
+        let matchFound = false;
+        // look for a perfect match
+        for (let j = i + 1; j < p.length; j++) {
+            // Check if profits sum to 0 (approx)
+            if (Math.abs(p[i].profit + p[j].profit) < 0.001) {
+                // match and remove from list
+                // negative pays, positive receives
+                let payer: SettlementPlayer;
+                let receiver: SettlementPlayer;
+
+                if (p[i].profit < 0) {
+                    payer = p[i];
+                    receiver = p[j];
+                } else {
+                    payer = p[j];
+                    receiver = p[i];
+                }
+
+                const amount = Math.abs(p[i].profit);
+                const payment: Payment = {
+                    from: payer.name,
+                    to: receiver.name,
+                    amount: Number(amount.toFixed(2)),
+                };
+
+                // remove p[j] first (larger index) to avoid shifting p[i]
+                p.splice(j, 1);
+                p.splice(i, 1);
+
+                // add payment to list
+                payments.push(payment);
+                matchFound = true;
+                break;
+            }
+        }
+
+        // if matchFound, we removed the element at i, so the next element 
+        // is now at i. We do not increment i.
+        if (!matchFound) {
+            i++;
+        }
+    }
+}
+
+function greedySettlement(p: SettlementPlayer[], payments: Payment[]): void {
+    // Sort by profit: most negative first, most positive last
+    p.sort((a, b) => a.profit - b.profit);
+
+    while (p.length > 1) {
+        const loser = p[0];
+        const winner = p[p.length - 1];
+
+        const amount = Math.min(Math.abs(loser.profit), winner.profit);
+
+        // Only create payment if amount is significant
+        if (amount > 0.001) {
+            const payment: Payment = {
+                from: loser.name,
+                to: winner.name,
+                amount: Number(amount.toFixed(2)),
+            };
+            payments.push(payment);
+        }
+
+        loser.profit += amount;
+        winner.profit -= amount;
+
+        // Handle floating point precision
+        loser.profit = Math.round(loser.profit * 100) / 100;
+        winner.profit = Math.round(winner.profit * 100) / 100;
+
+        if (Math.abs(loser.profit) < 0.001) {
+            p.shift(); // remove first element (loser)
+        }
+
+        if (Math.abs(winner.profit) < 0.001) {
+            // We need to find the winner again because indices might have shifted if we popped loser
+            // But since winner was at the end, if we popped head, winner is still at p.length-1
+            // However, use indexOf to be safe or just pop last if we are sure
+            const winnerIdx = p.indexOf(winner);
+            if (winnerIdx !== -1) {
+                p.splice(winnerIdx, 1);
+            }
+        }
+    }
+}
+
+export function calculateSettlement(players: Player[]): Payment[] {
+    const totalBuyIn = players.reduce((acc, player) => acc + Number(player.buyIn), 0);
+    const totalCashOut = players.reduce((acc, player) => acc + Number(player.cashOut), 0);
+
+    if (Math.abs(totalBuyIn - totalCashOut) > 0.01) {
+        console.warn(`Total buy-in (${totalBuyIn}) does not equal total cash-out (${totalCashOut}).`);
     }
 
-    const playerList = players.map((player) => {
+    let settlementPlayers: SettlementPlayer[] = players.map((player) => {
+        const b = Number(player.buyIn);
+        const c = Number(player.cashOut);
         return {
             id: player.id,
             name: player.name,
-            buyIn: Number(player.buyIn),
-            cashOut: Number(player.cashOut),
+            buyIn: b,
+            cashOut: c,
+            profit: c - b,
         };
     });
-    
+
+    const payments: Payment[] = [];
+
+    // remove players who broke even
+    settlementPlayers = removeZeros(settlementPlayers);
+
+    // sort by profit (ascending)
+    settlementPlayers.sort((a, b) => a.profit - b.profit);
+
+    // try to find matches first
+    matchSettlement(settlementPlayers, payments);
+
+    // if no matches, use greedy algorithm
+    greedySettlement(settlementPlayers, payments);
+
+    return payments;
 }
-
-
-/*
-struct Payment {
-    from: player
-    to: player
-    amount: number
-}
-
-function removeZeros(p: list of players):
-    p = p.filter(player => player.profit != 0)
-    return p
-
-function matchSettlement(p: list of players, payments: list of Payment):
-    i = 0
-    matchFound = false
-    while i < p.length:
-        for j in range(i+1, len(p)): # check ahead
-            if p[i].profit + p[j].profit == 0:
-                # match and remove from list
-                Payment payment = {
-                    from: p[i].profit < 0 ? p[i] : p[j], # negative pays
-                    to: p[i].profit < 0 ? p[j] : p[i], # positive receives
-                    amount: abs(p[i].profit),
-                }
-                # remove p[i] and p[j] from list
-                p.pop(j)
-                p.pop(i)
-
-                # add payment to list
-                payments.push(payment)
-                matchFound = true
-        
-            # break out of j loop once profit does not match
-            else if abs(p[i].profit) != abs(p[j].profit):
-                break
-            else:
-                break
-        # if matchFound, i does not need to be incremented since we are
-        # popping elements, naturally getting to the next element
-        if !matchFound:
-            i += 1
-    return
-
-# no more matches, use greedy algorithm
-function greedySettlement(p: list of players, payments: list of Payment):
-    sort p by profit
-    while p.length > 0:
-
-        # if most profit is greater than most loss
-        if abs(p[-1].profit) > abs(p[0].profit):
-            # biggest loser pays all loss to biggest winner
-            Payment payment = {
-                from: p[0],
-                to: p[-1],
-                amount: abs(p[0].profit),
-            }
-            payments.push(payment)
-
-            # update winner profit: subtract payment (winnings gets closer to 0)
-            p[-1].profit += p[-1].profit
-
-            p.pop(0) # biggest loser accounted for; can be removed
-            
-        # if most loss is greater than most profit
-        else if abs(p[0].profit) > abs(p[-1].profit):
-            # biggest winner gets everything paid off by biggest loser
-            Payment payment = {
-                from: p[0],
-                to: p[-1],
-                amount: abs(p[0].profit),
-            }
-            payments.push(payment)
-
-            # update loser profit: add payment (debt gets closer to 0)
-            p[0].profit += p[-1].profit
-
-            p.pop(-1) # can remove biggest winner 
-            
-        
-
-function settlement(p: list of players):
-    payments = Payment[]
-    
-    # remove players who broke even
-    p = removeZeros(p)
-
-    sort p by abs(profit)
-    # try to find matches first
-    matchSettlement(p, payments)
-
-    # if no matches, use greedy algorithm
-    greedySettlement(p, payments)
-
-    return payments
-*/
