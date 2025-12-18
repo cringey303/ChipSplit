@@ -1,8 +1,9 @@
 export type Player = {
     id: string;
     name: string;
-    buyIn: string;
-    cashOut: string;
+    buyIn: number;
+    cashOut: number;
+    profit: number;
 };
 
 export type Payment = {
@@ -11,20 +12,14 @@ export type Payment = {
     amount: number;
 };
 
-type SettlementPlayer = {
-    id: string;
-    name: string;
-    buyIn: number;
-    cashOut: number;
-    profit: number;
-};
 
-function removeZeros(p: SettlementPlayer[]): SettlementPlayer[] {
+
+function removeZeros(p: Player[]): Player[] {
     // filter out players with 0 profit (allowing for small float errors)
     return p.filter(player => Math.abs(player.profit) > 0.001);
 }
 
-function matchSettlement(p: SettlementPlayer[], payments: Payment[]): void {
+function matchSettlement(p: Player[], payments: Payment[]): void {
     let i = 0;
     while (i < p.length) {
         let matchFound = false;
@@ -34,8 +29,8 @@ function matchSettlement(p: SettlementPlayer[], payments: Payment[]): void {
             if (Math.abs(p[i].profit + p[j].profit) < 0.001) {
                 // match and remove from list
                 // negative pays, positive receives
-                let payer: SettlementPlayer;
-                let receiver: SettlementPlayer;
+                let payer: Player;
+                let receiver: Player;
 
                 if (p[i].profit < 0) {
                     payer = p[i];
@@ -71,7 +66,7 @@ function matchSettlement(p: SettlementPlayer[], payments: Payment[]): void {
     }
 }
 
-function greedySettlement(p: SettlementPlayer[], payments: Payment[]): void {
+function greedySettlement(p: Player[], payments: Payment[]): void {
     // Sort by profit: most negative first, most positive last
     p.sort((a, b) => a.profit - b.profit);
 
@@ -122,17 +117,9 @@ export function calculateSettlement(players: Player[]): Payment[] {
         console.warn(`Total buy-in (${totalBuyIn}) does not equal total cash-out (${totalCashOut}).`);
     }
 
-    let settlementPlayers: SettlementPlayer[] = players.map((player) => {
-        const b = Number(player.buyIn);
-        const c = Number(player.cashOut);
-        return {
-            id: player.id,
-            name: player.name,
-            buyIn: b,
-            cashOut: c,
-            profit: c - b,
-        };
-    });
+    // Clone players to avoid mutating the original array (since we modify profit)
+    // We trust the passed profit value as per request.
+    let settlementPlayers: Player[] = players.map(p => ({ ...p }));
 
     const payments: Payment[] = [];
 

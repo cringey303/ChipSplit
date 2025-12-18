@@ -10,8 +10,9 @@ export default function Home() {
     {
       id: String(Date.now()) + Math.random(),
       name: "",
-      buyIn: "",
-      cashOut: "",
+      buyIn: 0,
+      cashOut: 0,
+      profit: 0,
     },
   ]);
 
@@ -19,8 +20,9 @@ export default function Home() {
     const newPlayer: Player = {
       id: String(Date.now()) + Math.random(),
       name: "",
-      buyIn: "",
-      cashOut: "",
+      buyIn: 0,
+      cashOut: 0,
+      profit: 0,
     };
     /* Add new player to the end of the list, defaultEditing will be true */
     setPlayers((p) => [...p, newPlayer]);
@@ -38,13 +40,14 @@ export default function Home() {
 
   function handleClear() {
     if (players.length == 0) return;
-    
+
     setPlayers([
       {
         id: String(Date.now()),
         name: "",
-        buyIn: "",
-        cashOut: "",
+        buyIn: 0,
+        cashOut: 0,
+        profit: 0,
       },
     ]);
   }

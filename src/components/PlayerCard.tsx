@@ -4,8 +4,9 @@ import React, { useState } from "react";
 export type Player = {
   id: string;
   name: string;
-  buyIn: string;
-  cashOut: string;
+  buyIn: number;
+  cashOut: number;
+  profit: number;
 };
 
 type PlayerCardProps = {
@@ -23,19 +24,36 @@ export default function PlayerCard({
   defaultEditing = false,
   playerNumber,
 }: PlayerCardProps) {
+  // Internal form state uses strings for buyIn/cashOut to match input field values
   const [isEditing, setIsEditing] = useState(defaultEditing);
-  const [formState, setFormState] = useState(player);
+  const [formState, setFormState] = useState({
+    ...player,
+    buyIn: String(player.buyIn),
+    cashOut: String(player.cashOut),
+  });
   const [showError, setShowError] = useState(false);
 
   const profit = Number(formState.cashOut) - Number(formState.buyIn);
   const isProfitPositive = profit >= 0;
 
   const handleSave = () => {
-    if (!formState.buyIn) {
+    // If user leaves field empty, treat as 0
+    const b = formState.buyIn === "" ? 0 : Number(formState.buyIn);
+    const c = formState.cashOut === "" ? 0 : Number(formState.cashOut);
+
+    if (isNaN(b)) { // Check if buyIn is a valid number
       setShowError(true);
       return;
     }
-    onUpdate(formState);
+
+    const finalPlayer: Player = {
+      ...player, // Keep original id
+      name: formState.name,
+      buyIn: b,
+      cashOut: c,
+      profit: c - b,
+    };
+    onUpdate(finalPlayer);
     setIsEditing(false);
     setShowError(false);
   };
