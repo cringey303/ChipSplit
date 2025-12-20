@@ -1,5 +1,7 @@
 Live at [https://chipsplit.vercel.app](https://chipsplit.vercel.app).
 
+Not functioning yet. Settlement algorithm is created and connected but not accessible on the front end yet.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
