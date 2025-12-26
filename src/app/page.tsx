@@ -65,6 +65,32 @@ export default function Home() {
     setIsSettled(true);
   }
 
+  function handleFixDiscrepancy() {
+    // Strategy: Adjust Buy-In to match Cash-Out
+    // If we have less cash out than buy in (negative discrepancy), effectively we bought in for less.
+    // If we have more cash out (positive), we bought in for more.
+    const totalBuyIn = players.reduce((acc, p) => acc + Number(p.buyIn), 0);
+    const totalCashOut = players.reduce((acc, p) => acc + Number(p.cashOut), 0);
+    const discrepancy = totalCashOut - totalBuyIn;
+
+    if (Math.abs(discrepancy) < 0.01) return;
+
+    const adjustmentPerPlayer = discrepancy / players.length;
+
+    setPlayers((current) =>
+      current.map((p) => {
+        const newBuyIn = Number(p.buyIn) + adjustmentPerPlayer;
+        // Round to 2 decimal places to avoid overly precise floating points
+        const roundedBuyIn = Math.round(newBuyIn * 100) / 100;
+        return {
+          ...p,
+          buyIn: roundedBuyIn,
+          profit: Number(p.cashOut) - roundedBuyIn,
+        };
+      })
+    );
+  }
+
   const activeSessions = [
     { id: "s1", title: "street poker", date: "Dec 11" },
     { id: "s2", title: "bday", date: "Dec 8" },
@@ -74,6 +100,12 @@ export default function Home() {
     { id: "c1", title: "gang", date: "Dec 1" },
     { id: "c2", title: "nest", date: "Nov 28" },
   ];
+
+  // Calculate totals for rendering
+  const totalBuyIn = players.reduce((acc, p) => acc + Number(p.buyIn), 0);
+  const totalCashOut = players.reduce((acc, p) => acc + Number(p.cashOut), 0);
+  const discrepancy = totalCashOut - totalBuyIn;
+  const hasDiscrepancy = Math.abs(discrepancy) > 0.01;
 
   return (
     <div className="flex min-h-screen flex-col px-4 pt-4 font-sans md:px-8">
@@ -94,17 +126,19 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="mx-auto flex w-full flex-col-reverse gap-8 md:flex-row md:gap-6">
-          {/* Left column */}
+        <div className="mx-auto flex w-full flex-col-reverse gap-8 md:flex-row md:gap-6 justify-center">
+          {/* Left column - SESSIONS HIDDEN AS REQUESTED */}
+          {/* 
           <aside className="w-full md:w-1/2">
             <div className="flex flex-col gap-4">
               <SessionList title="Active sessions" sessions={activeSessions} defaultOpen />
               <SessionList title="Completed sessions" sessions={completedSessions} defaultOpen={false} />
             </div>
-          </aside>
+          </aside> 
+          */}
 
-          {/* Right column */}
-          <section className="w-full md:w-1/2">
+          {/* Right column - Centered if alone */}
+          <section className="w-full max-w-2xl">
             <div className="rounded-md border border-outline p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">{isSettled ? "Settlements" : "Players"}</h2>
@@ -113,6 +147,13 @@ export default function Home() {
                   {!isSettled ? (
                     <>
                       <button
+                        onClick={handleFixDiscrepancy}
+                        className={`cursor-pointer rounded-md border border-yellow-500/50 px-3 py-2 text-sm font-medium text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/20 ${!hasDiscrepancy ? 'hidden' : ''}`}
+                        title="Split discrepancy evenly across all players"
+                      >
+                        Fix ${Math.abs(discrepancy).toFixed(2)}
+                      </button>
+                      <button
                         onClick={handleClear}
                         className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
                       >
@@ -120,7 +161,11 @@ export default function Home() {
                       </button>
                       <button
                         onClick={handleCalculate}
-                        className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800"
+                        disabled={hasDiscrepancy}
+                        className={`cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors
+                            ${hasDiscrepancy
+                            ? "bg-zinc-300 cursor-not-allowed dark:bg-zinc-800 text-zinc-500"
+                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-600 dark:hover:bg-zinc-800"}`}
                       >
                         Calculate
                       </button>
@@ -136,6 +181,17 @@ export default function Home() {
                   )}
                 </div>
               </div>
+
+              {/* Discrepancy Warning Banner */}
+              {!isSettled && hasDiscrepancy && (
+                <div className="mb-4 rounded-md bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-900/50 flex items-center justify-between">
+                  <span>
+                    <strong>Mismatch:</strong> Total Buy-In (${totalBuyIn.toFixed(2)}) != Cash-Out (${totalCashOut.toFixed(2)}).
+                    <br />
+                    Difference: <span className="font-mono">{discrepancy > 0 ? "+" : ""}{discrepancy.toFixed(2)}</span>
+                  </span>
+                </div>
+              )}
 
               {!isSettled ? (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
