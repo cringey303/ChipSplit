@@ -13,7 +13,7 @@ type PlayerCardProps = {
   player: Player;
   onRemove: (id: string) => void;
   onUpdate: (player: Player) => void;
-  defaultEditing?: boolean;
+
   playerNumber?: number;
 };
 
@@ -21,156 +21,130 @@ export default function PlayerCard({
   player,
   onRemove,
   onUpdate,
-  defaultEditing = false,
   playerNumber,
 }: PlayerCardProps) {
   // Internal form state uses strings for buyIn/cashOut to match input field values
-  const [isEditing, setIsEditing] = useState(defaultEditing);
   const [formState, setFormState] = useState({
-    ...player,
-    buyIn: String(player.buyIn),
-    cashOut: String(player.cashOut),
+    name: player.name,
+    buyIn: String(player.buyIn === 0 && player.name === "" ? "" : player.buyIn), // Show empty for new players if 0
+    cashOut: String(player.cashOut === 0 && player.name === "" ? "" : player.cashOut),
   });
   const [showError, setShowError] = useState(false);
+
+  // Sync internal state if parent updates (e.g. initial load or external change)
+  // We strictly sync if the ID changes or if we want to force consistency. 
+  // For now, simpler is better: we assume this component 'owns' the draft state until blur.
 
   const profit = Number(formState.cashOut) - Number(formState.buyIn);
   const isProfitPositive = profit >= 0;
 
-  const handleSave = () => {
+  const handleBlur = () => {
     // If user leaves field empty, treat as 0
     const b = formState.buyIn === "" ? 0 : Number(formState.buyIn);
     const c = formState.cashOut === "" ? 0 : Number(formState.cashOut);
 
-    if (isNaN(b)) { // Check if buyIn is a valid number
+    if (isNaN(b) || isNaN(c)) {
       setShowError(true);
       return;
     }
 
-    const finalPlayer: Player = {
-      ...player, // Keep original id
-      name: formState.name,
-      buyIn: b,
-      cashOut: c,
-      profit: c - b,
-    };
-    onUpdate(finalPlayer);
-    setIsEditing(false);
+    // Only update if changed prevents infinite loops or unnecessary renders
+    if (b !== player.buyIn || c !== player.cashOut || formState.name !== player.name) {
+      const finalPlayer: Player = {
+        ...player,
+        name: formState.name,
+        buyIn: b,
+        cashOut: c,
+        profit: c - b,
+      };
+      onUpdate(finalPlayer);
+    }
     setShowError(false);
   };
 
-  if (isEditing) {
-    return (
-      <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
-        <label className="flex w-full flex-col gap-1">
-          <span className="text-sm font-medium">Name</span>
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLElement).blur();
+    }
+  };
+
+  return (
+    <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-zinc-500">
+            {playerNumber ? `Player ${playerNumber}` : "Player"}
+          </span>
+          <div className={`text-right font-mono font-medium ${isProfitPositive ? "text-green-600" : "text-red-500"}`}>
+            {isProfitPositive ? "+" : ""}
+            {profit.toFixed(2)}
+          </div>
+        </div>
+        <input
+          value={formState.name}
+          onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setShowError(false)}
+          className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent 
+          focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
+          placeholder="Player Name"
+        />
+      </div>
+
+      <div className="flex gap-3">
+        <label className="flex w-1/2 flex-col gap-1">
+          <span className="text-sm font-medium">
+            Buy-In {showError && <span className="text-red-500">*</span>}
+          </span>
           <input
-            value={formState.name}
-            onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+            value={formState.buyIn}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (/^\d*\.?\d{0,2}$/.test(val)) {
+                setFormState({ ...formState, buyIn: val });
+              }
+            }}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setShowError(false)}
+            className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent 
+              focus:outline-none ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
+              }`}
+            placeholder="0.00"
+            inputMode="decimal"
+          />
+        </label>
+        <label className="flex w-1/2 flex-col gap-1">
+          <span className="text-sm font-medium">Cash Out</span>
+          <input
+            value={formState.cashOut}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (/^\d*\.?\d{0,2}$/.test(val)) {
+                setFormState({ ...formState, cashOut: val });
+              }
+            }}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
             className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent 
             focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
-            placeholder="Player name"
-            autoFocus
+            placeholder="0.00"
+            inputMode="decimal"
           />
         </label>
-
-        <div className="flex gap-3">
-          <label className="flex w-1/2 flex-col gap-1">
-            <span className="text-sm font-medium">
-              Buy-In {showError && <span className="text-red-500">*</span>}
-            </span>
-            <input
-              value={formState.buyIn}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (/^\d*\.?\d{0,2}$/.test(val)) {
-                  setFormState({ ...formState, buyIn: val });
-                }
-              }}
-              onFocus={() => setShowError(false)}
-              className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent 
-                focus:outline-none ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
-                }`}
-              placeholder="0.00"
-              inputMode="decimal"
-            />
-          </label>
-          <label className="flex w-1/2 flex-col gap-1">
-            <span className="text-sm font-medium">Cash Out</span>
-            <input
-              value={formState.cashOut}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (/^\d*\.?\d{0,2}$/.test(val)) {
-                  setFormState({ ...formState, cashOut: val });
-                }
-              }}
-              onFocus={() => setShowError(false)}
-              className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
-              placeholder="0.00"
-              inputMode="decimal"
-            />
-          </label>
-        </div>
-
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <button
-            onClick={() => onRemove(player.id)}
-            className="cursor-pointer rounded-md border border-red-900/50 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/40 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40 md:border-red-200 md:text-red-600 md:hover:bg-red-50 md:dark:border-red-900/50 md:dark:text-red-400 md:dark:hover:bg-red-900/40"
-          >
-            Delete
-          </button>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIsEditing(false)}
-              className="cursor-pointer rounded-md border border-zinc-700 bg-transparent px-3 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 md:border-zinc-300 md:text-zinc-700 md:hover:bg-zinc-50 md:dark:border-zinc-700 md:dark:text-zinc-300 md:dark:hover:bg-zinc-800"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 
-              dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800 md:bg-zinc-900 md:text-white md:hover:bg-zinc-800 
-              md:dark:bg-zinc-600 md:dark:text-white md:dark:hover:bg-zinc-800"
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex w-full flex-col gap-2 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
-      <div className="flex items-start justify-between">
-        <div>
-          <h3 className="font-semibold">{formState.name || (playerNumber ? `Player ${playerNumber}` : "Player")}</h3>
-          <div className="mt-1 flex gap-4 text-sm text-zinc-500">
-            <span>Buy-In: {formState.buyIn || "0"}</span>
-            <span>Cash Out: {formState.cashOut || "0"}</span>
-          </div>
-        </div>
-        <div className={`text-right font-mono font-medium ${isProfitPositive ? "text-green-600" : "text-red-500"}`}>
-          {isProfitPositive ? "+" : ""}
-          {profit.toFixed(2)}
-        </div>
       </div>
 
-      <div className="mt-2 flex gap-2">
+      <div className="flex justify-end mt-1">
         <button
           onClick={() => onRemove(player.id)}
-          className="cursor-pointer rounded-md border border-red-900/50 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/40 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40 md:border-red-200 md:text-red-600 md:hover:bg-red-100 md:dark:border-red-900/50 md:dark:text-red-400 md:dark:hover:bg-red-900/40"
+          className="text-xs text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 underline underline-offset-2"
         >
-          Delete
-        </button>
-        <button
-          onClick={() => setIsEditing(true)}
-          className="flex-1 cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-900 dark:hover:bg-zinc-900 md:hover:bg-zinc-100 md:dark:hover:bg-zinc-900"
-        >
-          Edit
+          Remove Player
         </button>
       </div>
     </div>
   );
 }
+

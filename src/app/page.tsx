@@ -4,6 +4,9 @@ import Image from "next/image";
 import PlayerCard, { type Player } from "../components/PlayerCard";
 import SessionList from "../components/SessionList";
 import { CoffeeButton } from "@/components/ui/coffee-button";
+import { ObfuscatedMail } from "../components/obfuscated-mail";
+import { calculateSettlement, Payment } from "@/lib/settlement";
+import SettlementList from "@/components/settlement-list";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
@@ -15,6 +18,8 @@ export default function Home() {
       profit: 0,
     },
   ]);
+  const [isSettled, setIsSettled] = useState(false);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   function handleAdd() {
     const newPlayer: Player = {
@@ -50,6 +55,14 @@ export default function Home() {
         profit: 0,
       },
     ]);
+    // reset view if we were settled
+    setIsSettled(false);
+  }
+
+  function handleCalculate() {
+    const results = calculateSettlement(players);
+    setPayments(results);
+    setIsSettled(true);
   }
 
   const activeSessions = [
@@ -94,40 +107,67 @@ export default function Home() {
           <section className="w-full md:w-1/2">
             <div className="rounded-md border border-outline p-4">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Players</h2>
-                <button
-                  onClick={handleClear}
-                  className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
-                >
-                  Clear
-                </button>
+                <h2 className="text-lg font-semibold">{isSettled ? "Settlements" : "Players"}</h2>
+                <div className="flex gap-2">
+                  {/* Only show clear/calc if not settled yet */}
+                  {!isSettled ? (
+                    <>
+                      <button
+                        onClick={handleClear}
+                        className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={handleCalculate}
+                        className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800"
+                      >
+                        Calculate
+                      </button>
+                    </>
+                  ) : (
+                    // changes to an 'Edit' button that goes back
+                    <button
+                      onClick={() => setIsSettled(false)}
+                      className="cursor-pointer rounded-md border border-outline px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                {players.length === 0 && (
-                  <div className="mb-2 text-sm text-zinc-500">No players added yet.</div>
-                )}
+              {!isSettled ? (
+                <div className="flex flex-col gap-3">
+                  {players.length === 0 && (
+                    <div className="mb-2 text-sm text-zinc-500">No players added yet.</div>
+                  )}
 
-                {players.map((p, i) => (
-                  <PlayerCard
-                    key={p.id}
-                    player={p}
-                    onRemove={handleRemove}
-                    onUpdate={handleUpdate}
-                    defaultEditing={p.name === ""} // Simple heuristic: if empty name, assume new/editing
-                    playerNumber={i + 1}
-                  />
-                ))}
-              </div>
+                  {players.map((p, i) => (
+                    <PlayerCard
+                      key={p.id}
+                      player={p}
+                      onRemove={handleRemove}
+                      onUpdate={handleUpdate}
+                      playerNumber={i + 1}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <SettlementList payments={payments} />
+              )}
 
-              <div className="mt-4">
-                <button
-                  onClick={handleAdd}
-                  className="w-full cursor-pointer rounded-md border border-dashed border-zinc-300 py-3 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
-                >
-                  + Add Player
-                </button>
-              </div>
+              {/* Hide 'Add Player' button when viewing settlements */}
+              {!isSettled && (
+                <div className="mt-4">
+                  <button
+                    onClick={handleAdd}
+                    className="w-full cursor-pointer rounded-md border border-dashed border-zinc-300 py-3 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                  >
+                    + Add Player
+                  </button>
+                </div>
+              )}
             </div>
           </section>
         </div>
@@ -140,12 +180,7 @@ export default function Home() {
                 <span className="hidden sm:inline">Built by Lucas Root</span>
                 <span className="sm:hidden">Lucas Root</span>
               </div>
-              <a
-                href="mailto:mrlucasroot@gmail.com"
-                className="hover:text-foreground transition-colors hover:underline whitespace-nowrap"
-              >
-                Report a Bug
-              </a>
+              <ObfuscatedMail />
             </div>
           </div>
         </footer>
