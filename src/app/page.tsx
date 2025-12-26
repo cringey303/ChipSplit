@@ -77,18 +77,19 @@ export default function Home() {
 
     const adjustmentPerPlayer = discrepancy / players.length;
 
-    setPlayers((current) =>
-      current.map((p) => {
-        const newBuyIn = Number(p.buyIn) + adjustmentPerPlayer;
-        // Round to 2 decimal places to avoid overly precise floating points
-        const roundedBuyIn = Math.round(newBuyIn * 100) / 100;
-        return {
-          ...p,
-          buyIn: roundedBuyIn,
-          profit: Number(p.cashOut) - roundedBuyIn,
-        };
-      })
-    );
+    const adjustedPlayers = players.map((p) => {
+      const newBuyIn = Number(p.buyIn) + adjustmentPerPlayer;
+      // Round to 2 decimal places to avoid overly precise floating points
+      const roundedBuyIn = Math.round(newBuyIn * 100) / 100;
+      return {
+        ...p,
+        buyIn: roundedBuyIn,
+        profit: Number(p.cashOut) - roundedBuyIn,
+      };
+    });
+
+    setPlayers(adjustedPlayers);
+    setPayments(calculateSettlement(adjustedPlayers));
   }
 
   const activeSessions = [
@@ -147,13 +148,6 @@ export default function Home() {
                   {!isSettled ? (
                     <>
                       <button
-                        onClick={handleFixDiscrepancy}
-                        className={`cursor-pointer rounded-md border border-yellow-500/50 px-3 py-2 text-sm font-medium text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/20 ${!hasDiscrepancy ? 'hidden' : ''}`}
-                        title="Split discrepancy evenly across all players"
-                      >
-                        Fix ${Math.abs(discrepancy).toFixed(2)}
-                      </button>
-                      <button
                         onClick={handleClear}
                         className="cursor-pointer rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/40"
                       >
@@ -161,11 +155,7 @@ export default function Home() {
                       </button>
                       <button
                         onClick={handleCalculate}
-                        disabled={hasDiscrepancy}
-                        className={`cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors
-                            ${hasDiscrepancy
-                            ? "bg-zinc-300 cursor-not-allowed dark:bg-zinc-800 text-zinc-500"
-                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-600 dark:hover:bg-zinc-800"}`}
+                        className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800"
                       >
                         Calculate
                       </button>
@@ -181,17 +171,6 @@ export default function Home() {
                   )}
                 </div>
               </div>
-
-              {/* Discrepancy Warning Banner */}
-              {!isSettled && hasDiscrepancy && (
-                <div className="mb-4 rounded-md bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-900/50 flex items-center justify-between">
-                  <span>
-                    <strong>Mismatch:</strong> Total Buy-In (${totalBuyIn.toFixed(2)}) != Cash-Out (${totalCashOut.toFixed(2)}).
-                    <br />
-                    Difference: <span className="font-mono">{discrepancy > 0 ? "+" : ""}{discrepancy.toFixed(2)}</span>
-                  </span>
-                </div>
-              )}
 
               {!isSettled ? (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -213,7 +192,28 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <SettlementList payments={payments} />
+                <div className="flex flex-col gap-4">
+                  {/* Discrepancy Warning Banner - Only shown in Settlement View */}
+                  {hasDiscrepancy && (
+                    <div className="rounded-md bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-900/50 flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span>
+                          <strong>Mismatch:</strong> Discrepancy of <span className="font-mono">{discrepancy > 0 ? "+" : ""}{discrepancy.toFixed(2)}</span>
+                        </span>
+                        <button
+                          onClick={handleFixDiscrepancy}
+                          className="cursor-pointer rounded-md bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800 dark:text-yellow-100 dark:hover:bg-yellow-700"
+                        >
+                          Auto-Fix
+                        </button>
+                      </div>
+                      <p className="text-xs opacity-90">
+                        The total Buy-In (${totalBuyIn.toFixed(2)}) doesn't match Cash-Out (${totalCashOut.toFixed(2)}). Settlements below may be inaccurate.
+                      </p>
+                    </div>
+                  )}
+                  <SettlementList payments={payments} />
+                </div>
               )}
 
               {/* Hide 'Add Player' button when viewing settlements */}
