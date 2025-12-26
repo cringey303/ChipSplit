@@ -139,7 +139,7 @@ export default function Home() {
           */}
 
           {/* Right column - Centered if alone */}
-          <section className="w-full max-w-2xl">
+          <section className="w-full max-w-full">
             <div className="rounded-md border border-outline p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">{isSettled ? "Settlements" : "Players"}</h2>
