@@ -138,9 +138,9 @@ export default function Home() {
               </div>
 
               {!isSettled ? (
-                <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {players.length === 0 && (
-                    <div className="mb-2 text-sm text-zinc-500">No players added yet.</div>
+                    <div className="mb-2 text-sm text-zinc-500 col-span-full">No players added yet.</div>
                   )}
 
                   {players.map((p, i) => (
@@ -150,6 +150,9 @@ export default function Home() {
                       onRemove={handleRemove}
                       onUpdate={handleUpdate}
                       playerNumber={i + 1}
+                      existingNames={players
+                        .filter((other) => other.id !== p.id && other.name !== "") // Exclude self and empty names
+                        .map((other) => other.name)}
                     />
                   ))}
                 </div>
