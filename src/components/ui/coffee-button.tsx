@@ -20,7 +20,7 @@ export function CoffeeButton() {
                 <Coffee className="h-5 w-5 flex-shrink-0" />
 
                 {/* Mobile/Tablet text */}
-                <span className="md:hidden font-medium">Support</span>
+                <span className="md:hidden font-medium">Support Me</span>
 
                 {/* Desktop hover text */}
                 <span className="hidden md:block max-w-0 group-hover:max-w-full opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out ml-0 group-hover:ml-2 whitespace-nowrap overflow-hidden">
