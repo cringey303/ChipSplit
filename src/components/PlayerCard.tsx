@@ -81,39 +81,37 @@ export default function PlayerCard({
   return (
     <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
       <div className="flex w-full flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-zinc-500">
-            Name
-          </span>
+        <div className="flex justify-end mb-1 h-5">
           <div
-            className={`text-right font-mono font-medium ${profit > 0 ? "text-green-600" : profit < 0 ? "text-red-500" : "text-zinc-500"
+            className={`text-right font-mono font-medium text-xs ${profit > 0 ? "text-green-600" : profit < 0 ? "text-red-500" : "text-zinc-500"
               }`}
           >
             {profit > 0 ? "+" : ""}
             {profit.toFixed(2)}
           </div>
         </div>
-        <input
-          value={formState.name}
-          onChange={(e) => {
-            setFormState({ ...formState, name: e.target.value });
-            if (nameError) setNameError(null); // Clear error on typing
-          }}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setShowError(false)}
-          className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent 
-          focus:outline-none ${nameError ? "border-red-500 ring-1 ring-red-500" : "border-outline focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"}`}
-          placeholder="Player Name"
-        />
-        {nameError && <span className="text-xs text-red-500">{nameError}</span>}
+        <div className="relative">
+          <input
+            value={formState.name}
+            onChange={(e) => {
+              setFormState({ ...formState, name: e.target.value });
+              if (nameError) setNameError(null);
+            }}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setShowError(false)}
+            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${nameError ? "border-red-500 ring-1 ring-red-500" : "border-outline"}`}
+            placeholder=" "
+          />
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+            Name
+          </label>
+        </div>
+        {nameError && <span className="mt-1 text-xs text-red-500">{nameError}</span>}
       </div>
 
-      <div className="flex gap-3">
-        <label className="flex w-1/2 flex-col gap-1">
-          <span className="text-sm font-medium text-zinc-500">
-            Buy-In {showError && <span className="text-red-500">*</span>}
-          </span>
+      <div className="flex gap-3 pt-2">
+        <div className="relative w-1/2">
           <input
             value={formState.buyIn}
             onChange={(e) => {
@@ -125,15 +123,16 @@ export default function PlayerCard({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
-            className={`w-full rounded-md border px-3 py-2 text-sm bg-transparent 
-              focus:outline-none ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
+            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline"
               }`}
-            placeholder="0.00"
+            placeholder=" "
             inputMode="decimal"
           />
-        </label>
-        <label className="flex w-1/2 flex-col gap-1">
-          <span className="text-sm font-medium text-zinc-500">Cash Out</span>
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+            Buy-In {showError && <span className="text-red-500">*</span>}
+          </label>
+        </div>
+        <div className="relative w-1/2">
           <input
             value={formState.cashOut}
             onChange={(e) => {
@@ -145,12 +144,14 @@ export default function PlayerCard({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
-            className="w-full rounded-md border border-outline px-3 py-2 text-sm bg-transparent 
-            focus:outline-none focus:ring-1 focus:ring-zinc-400 focus:border-zinc-400 md:focus:ring-zinc-900 md:focus:border-zinc-900 md:dark:focus:ring-zinc-400 md:dark:focus:border-zinc-400"
-            placeholder="0.00"
+            className="peer w-full rounded-md border border-outline bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand"
+            placeholder=" "
             inputMode="decimal"
           />
-        </label>
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+            Cash Out
+          </label>
+        </div>
       </div>
 
       <div className="flex justify-end mt-1">

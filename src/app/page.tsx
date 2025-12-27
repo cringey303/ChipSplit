@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import Image from "next/image";
+import { Logo } from "@/components/ui/Logo";
 import PlayerCard, { type Player } from "../components/PlayerCard";
 import SessionList from "../components/SessionList";
 import { CoffeeButton } from "@/components/ui/coffee-button";
@@ -113,13 +114,9 @@ export default function Home() {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
         <nav className="flex items-center justify-between py-4 mb-8 md:mb-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <Image
-              src="/logo.png"
-              alt="ChipSplit Logo"
-              width={32}
-              height={32}
-              className="h-8 w-8 object-contain"
-            />
+            <div className="text-brand">
+              <Logo className="h-8 w-8 text-brand fill-brand" />
+            </div>
             <span className="text-xl font-bold tracking-tight text-[#766D61]">ChipSplit</span>
           </a>
           <div className="flex items-center gap-2">
