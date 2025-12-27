@@ -81,15 +81,6 @@ export default function PlayerCard({
   return (
     <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
       <div className="flex w-full flex-col gap-1">
-        <div className="flex justify-end mb-1 h-5">
-          <div
-            className={`text-right font-mono font-medium text-xs ${profit > 0 ? "text-green-600" : profit < 0 ? "text-red-500" : "text-zinc-500"
-              }`}
-          >
-            {profit > 0 ? "+" : ""}
-            {profit.toFixed(2)}
-          </div>
-        </div>
         <div className="relative">
           <input
             value={formState.name}
@@ -103,7 +94,7 @@ export default function PlayerCard({
             className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${nameError ? "border-red-500 ring-1 ring-red-500" : "border-outline"}`}
             placeholder=" "
           />
-          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-brand peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
             Name
           </label>
         </div>
@@ -128,7 +119,7 @@ export default function PlayerCard({
             placeholder=" "
             inputMode="decimal"
           />
-          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-brand peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
             Buy-In {showError && <span className="text-red-500">*</span>}
           </label>
         </div>
@@ -148,19 +139,26 @@ export default function PlayerCard({
             placeholder=" "
             inputMode="decimal"
           />
-          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
+          <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-brand peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
             Cash Out
           </label>
         </div>
       </div>
 
-      <div className="flex justify-end mt-1">
+      <div className="flex justify-between items-center mt-1">
         <button
           onClick={() => onRemove(player.id)}
           className="text-xs text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 underline underline-offset-2"
         >
           Remove Player
         </button>
+        <div
+          className={`text-right font-mono font-medium text-xs ${profit > 0 ? "text-green-600" : profit < 0 ? "text-red-500" : "text-brand"
+            }`}
+        >
+          {profit > 0 ? "+" : ""}
+          {profit.toFixed(2)}
+        </div>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ export function ObfuscatedMail() {
     return (
         <a
             href={`mailto:${email}`}
-            className="text-zinc-500 hover:text-foreground transition-colors hover:underline whitespace-nowrap"
+            className="text-brand hover:text-foreground transition-colors hover:underline whitespace-nowrap"
         >
             Report a Bug
         </a>

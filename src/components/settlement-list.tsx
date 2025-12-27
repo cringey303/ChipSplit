@@ -36,13 +36,12 @@ export default function SettlementList({ payments }: SettlementListProps) {
                         <ArrowLeft size={16} className="text-zinc-400" />
                         <div className="flex flex-wrap items-center gap-2">
                             {payeePayments.map((p, index) => (
-                                <span key={index} className="flex items-center">
+                                <span key={index} className="flex items-center gap-1">
                                     {index > 0 && <span className="mr-2 text-zinc-400">,</span>}
                                     <span className="font-medium text-red-500">{p.from}</span>
-                                    <span className="font-mono text-zinc-500 mr-1">
+                                    <span className="font-mono text-zinc-500">
                                         (${p.amount.toFixed(2)})
                                     </span>
-                                    
                                 </span>
                             ))}
                         </div>

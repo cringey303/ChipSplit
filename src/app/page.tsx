@@ -218,7 +218,7 @@ export default function Home() {
                 <div className="mt-4">
                   <button
                     onClick={handleAdd}
-                    className="w-full cursor-pointer rounded-md border border-dashed border-zinc-300 py-3 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                    className="w-full cursor-pointer rounded-md border border-dashed border-brand py-3 text-sm font-medium text-brand hover:border-brand hover:bg-brand/10 dark:border-brand/50 dark:text-brand dark:hover:bg-brand/10"
                   >
                     + Add Player
                   </button>
@@ -229,7 +229,7 @@ export default function Home() {
         </div>
         <footer className="w-full mt-auto pb-6 pt-8">
           <div className="w-full px-4">
-            <div className="flex items-center justify-between border-t pt-4 text-sm text-zinc-500">
+            <div className="flex items-center justify-between border-t pt-4 text-sm text-brand">
               <div className="flex-1 flex justify-center gap-2 md:gap-4 pl-[88px] md:pl-[100px]">
                 <span>© 2025</span>
                 <span className="hidden sm:inline">•</span>
