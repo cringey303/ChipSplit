@@ -120,7 +120,7 @@ export default function Home() {
               height={32}
               className="h-8 w-8 object-contain"
             />
-            <span className="text-xl font-bold tracking-tight">ChipSplit</span>
+            <span className="text-xl font-bold tracking-tight text-[#766D61]">ChipSplit</span>
           </a>
           <div className="flex items-center gap-2">
             <CoffeeButton />
@@ -139,7 +139,7 @@ export default function Home() {
           */}
 
           {/* Right column - Centered if alone */}
-          <section className="w-full max-w-full">
+          <section className="w-full max-w-[1400px]">
             <div className="rounded-md border border-outline p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">{isSettled ? "Settlements" : "Players"}</h2>
@@ -155,7 +155,7 @@ export default function Home() {
                       </button>
                       <button
                         onClick={handleCalculate}
-                        className="cursor-pointer rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-800"
+                        className="cursor-pointer rounded-md bg-[#766D61] px-4 py-2 text-sm font-medium text-white hover:opacity-90 dark:text-white"
                       >
                         Calculate
                       </button>
@@ -173,7 +173,7 @@ export default function Home() {
               </div>
 
               {!isSettled ? (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3">
                   {players.length === 0 && (
                     <div className="mb-2 text-sm text-zinc-500 col-span-full">No players added yet.</div>
                   )}
