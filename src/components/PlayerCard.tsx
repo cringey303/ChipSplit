@@ -80,7 +80,7 @@ export default function PlayerCard({
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
-      <div className="flex w-full flex-col gap-1">
+      <div className="flex w-full flex-row gap-1.5">
         <div className="relative">
           <input
             value={formState.name}
@@ -99,9 +99,7 @@ export default function PlayerCard({
           </label>
         </div>
         {nameError && <span className="mt-1 text-xs text-red-500">{nameError}</span>}
-      </div>
 
-      <div className="flex gap-3 pt-2">
         <div className="relative w-1/2">
           <input
             value={formState.buyIn}
