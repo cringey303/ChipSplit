@@ -26,7 +26,7 @@ export const TEST_GAMES: TestGame[] = [
         name: "Highlander",
         description: "One Winner Takes All (Aggregation Test)",
         players: [
-            { id: "h1", name: "Connor MacLeod", buyIn: 10, cashOut: 110, profit: 100 },
+            { id: "h1", name: "C MacLeod", buyIn: 10, cashOut: 110, profit: 100 },
             { id: "h2", name: "Kurgan", buyIn: 50, cashOut: 0, profit: -50 },
             { id: "h3", name: "Ramirez", buyIn: 25, cashOut: 0, profit: -25 },
             { id: "h4", name: "Kastagir", buyIn: 25, cashOut: 0, profit: -25 },
