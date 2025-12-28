@@ -233,16 +233,16 @@ export default function Home() {
               {!isSettled && (
                 <div className="mt-4 flex gap-4">
                   <button
-                    onClick={handleTestGame}
-                    className="cursor-pointer rounded-md border border-dashed border-zinc-400 px-4 py-3 text-sm font-medium text-zinc-500 hover:border-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
-                  >
-                    Test Game
-                  </button>
-                  <button
                     onClick={handleAdd}
                     className="flex-1 cursor-pointer rounded-md border border-dashed border-brand py-3 text-sm font-medium text-brand hover:border-brand hover:bg-brand/10 dark:border-brand/50 dark:text-brand dark:hover:bg-brand/10"
                   >
                     + Add Player
+                  </button>
+                  <button
+                    onClick={handleTestGame}
+                    className="cursor-pointer rounded-md border border-dashed border-brand px-4 py-3 text-sm font-medium text-brand hover:border-brand hover:bg-brand/10 dark:border-brand/50 dark:text-brand dark:hover:bg-brand/10"
+                  >
+                    Test Game
                   </button>
                 </div>
               )}
