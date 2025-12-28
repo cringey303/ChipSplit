@@ -81,7 +81,7 @@ export default function PlayerCard({
   return (
     <div className="flex w-full flex-col gap-3 rounded-md border border-outline bg-black p-4 dark:bg-black md:bg-white">
       <div className="flex w-full flex-row gap-1.5">
-        <div className="relative">
+        <div className="relative flex-1 min-w-[80px]">
           <input
             value={formState.name}
             onChange={(e) => {
@@ -100,7 +100,7 @@ export default function PlayerCard({
         </div>
         {nameError && <span className="mt-1 text-xs text-red-500">{nameError}</span>}
 
-        <div className="relative w-1/2">
+        <div className="relative w-20">
           <input
             value={formState.buyIn}
             onChange={(e) => {
@@ -121,7 +121,7 @@ export default function PlayerCard({
             Buy-In {showError && <span className="text-red-500">*</span>}
           </label>
         </div>
-        <div className="relative w-1/2">
+        <div className="relative w-22">
           <input
             value={formState.cashOut}
             onChange={(e) => {

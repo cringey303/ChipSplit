@@ -170,7 +170,7 @@ export default function Home() {
               </div>
 
               {!isSettled ? (
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-3">
                   {players.length === 0 && (
                     <div className="mb-2 text-sm text-zinc-500 col-span-full">No players added yet.</div>
                   )}
