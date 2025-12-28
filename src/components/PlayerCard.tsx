@@ -155,7 +155,7 @@ export default function PlayerCard({
             }`}
         >
           {profit > 0 ? "+" : ""}
-          {profit.toFixed(2)}
+          {profit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </div>
       </div>
     </div>

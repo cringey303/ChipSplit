@@ -8,6 +8,7 @@ import { CoffeeButton } from "@/components/ui/coffee-button";
 import { ObfuscatedMail } from "../components/obfuscated-mail";
 import { calculateSettlement, Payment } from "@/lib/settlement";
 import SettlementList from "@/components/settlement-list";
+import { TEST_GAMES } from "@/lib/test-games";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
@@ -21,6 +22,7 @@ export default function Home() {
   ]);
   const [isSettled, setIsSettled] = useState(false);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [lastTestGameIndex, setLastTestGameIndex] = useState<number>(-1);
 
   function handleAdd() {
     const newPlayer: Player = {
@@ -94,18 +96,16 @@ export default function Home() {
   }
 
   function handleTestGame() {
-    const testPlayers: Player[] = [
-      { id: "t1", name: "Marty", buyIn: 20, cashOut: 0, profit: -20 },
-      { id: "t2", name: "Doc", buyIn: 30, cashOut: 10, profit: -20 },
-      { id: "t3", name: "Biff", buyIn: 10, cashOut: 70, profit: 60 },
-      { id: "t4", name: "Einie", buyIn: 15, cashOut: 4, profit: -11 },
-      { id: "t5", name: "Lorraine", buyIn: 10, cashOut: 21, profit: 11 },
-      { id: "t6", name: "George", buyIn: 10, cashOut: 12, profit: 2 },
-      { id: "t7", name: "Griff", buyIn: 10, cashOut: 4, profit: -6 },
-      { id: "t8", name: "Jennifer", buyIn: 10, cashOut: 14, profit: 4 },
-      { id: "t9", name: "Strickland", buyIn: 20, cashOut: 0, profit: -20 },
-    ];
-    setPlayers(testPlayers);
+    let randomIndex;
+    // Ensure we don't pick the same game twice in a row
+    do {
+      randomIndex = Math.floor(Math.random() * TEST_GAMES.length);
+    } while (randomIndex === lastTestGameIndex && TEST_GAMES.length > 1);
+
+    const selectedGame = TEST_GAMES[randomIndex];
+
+    setPlayers(selectedGame.players);
+    setLastTestGameIndex(randomIndex);
     setIsSettled(false);
   }
 
@@ -211,7 +211,7 @@ export default function Home() {
                     <div className="rounded-md bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-900/50 flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <span>
-                          <strong>Mismatch:</strong> Discrepancy of <span className="font-mono">{discrepancy > 0 ? "+" : ""}{discrepancy.toFixed(2)}</span>
+                          <strong>Mismatch:</strong> Discrepancy of <span className="font-mono">{discrepancy > 0 ? "+" : ""}{discrepancy.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </span>
                         <button
                           onClick={handleFixDiscrepancy}
@@ -221,7 +221,7 @@ export default function Home() {
                         </button>
                       </div>
                       <p className="text-xs opacity-90">
-                        The total Buy-In (${totalBuyIn.toFixed(2)}) doesn't match Cash-Out (${totalCashOut.toFixed(2)}). Settlements below may be inaccurate.
+                        The total Buy-In (${totalBuyIn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) doesn't match Cash-Out (${totalCashOut.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}). Settlements below may be inaccurate.
                       </p>
                     </div>
                   )}

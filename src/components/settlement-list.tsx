@@ -110,7 +110,7 @@ export default function SettlementList({ payments }: SettlementListProps) {
                                             {index > 0 && <span className="mr-2 text-zinc-400">,</span>}
                                             <span className="font-medium text-red-500">{p.from}</span>
                                             <span className="font-mono text-zinc-500">
-                                                (${p.amount.toFixed(2)})
+                                                (${p.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
                                             </span>
                                         </span>
                                     ))}
@@ -127,7 +127,7 @@ export default function SettlementList({ payments }: SettlementListProps) {
                                             {index > 0 && <span className="mr-2 text-zinc-400">,</span>}
                                             <span className="font-medium text-green-600">{p.to}</span>
                                             <span className="font-mono text-zinc-500">
-                                                (${p.amount.toFixed(2)})
+                                                (${p.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
                                             </span>
                                         </span>
                                     ))}
