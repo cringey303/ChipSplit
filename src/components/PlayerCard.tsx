@@ -91,7 +91,7 @@ export default function PlayerCard({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
-            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${nameError ? "border-red-500 ring-1 ring-red-500" : "border-outline"}`}
+            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm text-[#C0B39E] outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${nameError ? "border-red-500 ring-1 ring-red-500" : "border-outline"}`}
             placeholder=" "
           />
           <label className="pointer-events-none absolute -top-2 left-2 z-10 bg-black px-1 text-xs font-medium text-brand transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-brand peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand dark:bg-black md:bg-white">
@@ -114,7 +114,7 @@ export default function PlayerCard({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
-            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline"
+            className={`peer w-full rounded-md border bg-transparent px-3 py-2 text-sm text-[#C0B39E] outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand ${showError ? "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500" : "border-outline"
               }`}
             placeholder=" "
             inputMode="decimal"
@@ -135,7 +135,7 @@ export default function PlayerCard({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowError(false)}
-            className="peer w-full rounded-md border border-outline bg-transparent px-3 py-2 text-sm outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand"
+            className="peer w-full rounded-md border border-outline bg-transparent px-3 py-2 text-sm text-[#C0B39E] outline-none transition-all placeholder-shown:border-outline focus:border-brand focus:ring-1 focus:ring-brand"
             placeholder=" "
             inputMode="decimal"
           />
