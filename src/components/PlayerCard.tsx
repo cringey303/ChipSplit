@@ -148,7 +148,7 @@ export default function PlayerCard({
       <div className="flex justify-between items-center mt-1">
         <button
           onClick={() => onRemove(player.id)}
-          className="text-xs text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 underline underline-offset-2"
+          className="cursor-pointer text-xs text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 underline underline-offset-2"
         >
           Remove Player
         </button>

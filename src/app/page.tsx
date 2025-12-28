@@ -152,7 +152,7 @@ export default function Home() {
                       </button>
                       <button
                         onClick={handleCalculate}
-                        className="cursor-pointer rounded-md bg-[#766D61] px-4 py-2 text-sm font-medium text-white hover:opacity-90 dark:text-white"
+                        className="cursor-pointer rounded-md bg-[#E5D5BC] px-4 py-2 text-sm font-medium text-[#FDEBD0] hover:opacity-90 dark:bg-[#766D61]"
                       >
                         Calculate
                       </button>
