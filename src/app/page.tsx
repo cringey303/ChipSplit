@@ -93,6 +93,22 @@ export default function Home() {
     setPayments(calculateSettlement(adjustedPlayers));
   }
 
+  function handleTestGame() {
+    const testPlayers: Player[] = [
+      { id: "t1", name: "Marty", buyIn: 20, cashOut: 0, profit: -20 },
+      { id: "t2", name: "Doc", buyIn: 30, cashOut: 10, profit: -20 },
+      { id: "t3", name: "Biff", buyIn: 10, cashOut: 70, profit: 60 },
+      { id: "t4", name: "Einie", buyIn: 15, cashOut: 4, profit: -11 },
+      { id: "t5", name: "Lorraine", buyIn: 10, cashOut: 21, profit: 11 },
+      { id: "t6", name: "George", buyIn: 10, cashOut: 12, profit: 2 },
+      { id: "t7", name: "Griff", buyIn: 10, cashOut: 4, profit: -6 },
+      { id: "t8", name: "Jennifer", buyIn: 10, cashOut: 14, profit: 4 },
+      { id: "t9", name: "Strickland", buyIn: 20, cashOut: 0, profit: -20 },
+    ];
+    setPlayers(testPlayers);
+    setIsSettled(false);
+  }
+
   const activeSessions = [
     { id: "s1", title: "street poker", date: "Dec 11" },
     { id: "s2", title: "bday", date: "Dec 8" },
@@ -215,10 +231,16 @@ export default function Home() {
 
               {/* Hide 'Add Player' button when viewing settlements */}
               {!isSettled && (
-                <div className="mt-4">
+                <div className="mt-4 flex gap-4">
+                  <button
+                    onClick={handleTestGame}
+                    className="cursor-pointer rounded-md border border-dashed border-zinc-400 px-4 py-3 text-sm font-medium text-zinc-500 hover:border-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  >
+                    Test Game
+                  </button>
                   <button
                     onClick={handleAdd}
-                    className="w-full cursor-pointer rounded-md border border-dashed border-brand py-3 text-sm font-medium text-brand hover:border-brand hover:bg-brand/10 dark:border-brand/50 dark:text-brand dark:hover:bg-brand/10"
+                    className="flex-1 cursor-pointer rounded-md border border-dashed border-brand py-3 text-sm font-medium text-brand hover:border-brand hover:bg-brand/10 dark:border-brand/50 dark:text-brand dark:hover:bg-brand/10"
                   >
                     + Add Player
                   </button>

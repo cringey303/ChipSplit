@@ -100,7 +100,7 @@ export default function PlayerCard({
         </div>
         {nameError && <span className="mt-1 text-xs text-red-500">{nameError}</span>}
 
-        <div className="relative w-20">
+        <div className="relative w-22">
           <input
             value={formState.buyIn}
             onChange={(e) => {
