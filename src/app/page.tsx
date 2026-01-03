@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
 import PlayerCard, { type Player } from "../components/PlayerCard";
@@ -9,6 +9,7 @@ import { ObfuscatedMail } from "../components/obfuscated-mail";
 import { calculateSettlement, Payment } from "@/lib/settlement";
 import SettlementList from "@/components/settlement-list";
 import { TEST_GAMES } from "@/lib/test-games";
+import { storageService } from "@/lib/storage";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
@@ -23,6 +24,27 @@ export default function Home() {
   const [isSettled, setIsSettled] = useState(false);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [lastTestGameIndex, setLastTestGameIndex] = useState<number>(-1);
+  
+  // create flag to check if loaded data from local storage
+  // empty dependency ([]) means it runs only once
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Restore previous session from local storage
+  useEffect(() => {
+    const savedPlayers = storageService.loadGame();
+    if (savedPlayers && savedPlayers.length > 0) {
+      setPlayers(savedPlayers);
+    }
+    setIsLoaded(true); // mark flag as loaded
+  }, []);
+
+  // auto-save session every time 'players' changed after data loaded
+  // dependency on 'players' and 'isLoaded'
+  useEffect(() => {
+    if (isLoaded) {
+      storageService.saveGame(players);
+    }
+  }, [players, isLoaded]);
 
   function handleAdd() {
     const newPlayer: Player = {
@@ -50,7 +72,8 @@ export default function Home() {
   function handleClear() {
     if (players.length == 0) return;
 
-    setPlayers([
+    if (window.confirm("Are you sure you want to clear all data? This cannot be undone.")) {
+      setPlayers([
       {
         id: String(Date.now()),
         name: "",
@@ -58,9 +81,11 @@ export default function Home() {
         cashOut: 0,
         profit: 0,
       },
-    ]);
-    // reset view if we were settled
-    setIsSettled(false);
+      ]);
+      // reset view if we were settled
+      setIsSettled(false);
+      storageService.clearGame();
+    }
   }
 
   function handleCalculate() {
