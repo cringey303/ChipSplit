@@ -36,6 +36,7 @@ export default function Home() {
     setPlayers((p) => [...p, newPlayer]);
   }
 
+
   function handleUpdate(updatedPlayer: Player) {
     setPlayers((currentPlayers) =>
       currentPlayers.map((p) => (p.id === updatedPlayer.id ? updatedPlayer : p))
@@ -141,7 +142,7 @@ export default function Home() {
         </nav>
 
         <div className="mx-auto flex w-full flex-col-reverse gap-8 md:flex-row md:gap-6 justify-center">
-          {/* Left column - SESSIONS HIDDEN AS REQUESTED */}
+          {/* Left column */}
           {/* 
           <aside className="w-full md:w-1/2">
             <div className="flex flex-col gap-4">

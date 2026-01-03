@@ -19,6 +19,7 @@ function removeZeros(p: Player[]): Player[] {
     return p.filter(player => Math.abs(player.profit) > 0.001);
 }
 
+// match players with equal losses/gains and remove them from player pool
 function matchSettlement(p: Player[], payments: Payment[]): void {
     let i = 0;
     while (i < p.length) {
