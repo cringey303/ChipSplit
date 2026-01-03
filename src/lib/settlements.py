@@ -1,3 +1,5 @@
+# python settlement logic before implementing in typescript
+
 class Payment:
     def __init__(self, from_name: str, to_name: str, amount: int):
         self.from_name = from_name
